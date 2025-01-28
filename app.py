@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+import os
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)  # Enable CORS for all routes and origins
 
 # In-memory storage
@@ -11,6 +12,11 @@ photos = []
 user_id_counter = 1
 venue_id_counter = 1
 photo_id_counter = 1
+
+# Serve index.html from the 'static' folder
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
 
 # Create a user
 @app.route('/users', methods=['POST'])
@@ -94,4 +100,6 @@ def get_photo(id):
     return jsonify(photo), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Render sets PORT as an environment variable. Default to 5000 if not set.
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
