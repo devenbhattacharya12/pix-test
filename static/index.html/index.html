@@ -29,7 +29,8 @@
       const name = document.getElementById('venueName').value;
       const address = document.getElementById('venueAddress').value;
       
-      fetch('http://127.0.0.1:5000/venues', {
+      // Changed to a relative URL: '/venues' instead of 'http://127.0.0.1:5000/venues'
+      fetch('/venues', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, streetAddress: address })
@@ -46,7 +47,8 @@
 
     // Load & display all venues in a table (GET)
     function loadVenues() {
-      fetch('http://127.0.0.1:5000/venues')
+      // Again, fetch from '/venues' instead of 'http://127.0.0.1:5000/venues'
+      fetch('/venues')
         .then(response => response.json())
         .then(data => {
           let tableHtml = '<table border="1">';
