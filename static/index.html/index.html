@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Photo Collection</title>
+</head>
+<body>
+
+  <h1>Welcome to the Photo Collection</h1>
+  
+  <!-- Form to add a new venue -->
+  <h2>Add a Venue</h2>
+  <label for="venueName">Name:</label>
+  <input type="text" id="venueName" />
+  
+  <label for="venueAddress">Address:</label>
+  <input type="text" id="venueAddress" />
+  
+  <button onclick="addVenue()">Add Venue</button>
+  
+  <!-- Button + table to view all venues -->
+  <h2>View Venues</h2>
+  <button onclick="loadVenues()">Load Venues</button>
+  <div id="venues-table"></div>
+
+  <script>
+    // Create a new venue (POST)
+    function addVenue() {
+      const name = document.getElementById('venueName').value;
+      const address = document.getElementById('venueAddress').value;
+      
+      fetch('http://127.0.0.1:5000/venues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, streetAddress: address })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Venue created:', data);
+        alert('Venue created. Check console for details!');
+        // Automatically reload the table after adding a venue
+        loadVenues();
+      })
+      .catch(error => console.error('Error adding venue:', error));
+    }
+
+    // Load & display all venues in a table (GET)
+    function loadVenues() {
+      fetch('http://127.0.0.1:5000/venues')
+        .then(response => response.json())
+        .then(data => {
+          let tableHtml = '<table border="1">';
+          tableHtml += '<thead><tr><th>ID</th><th>Name</th><th>Address</th></tr></thead>';
+          tableHtml += '<tbody>';
+
+          data.forEach(venue => {
+            tableHtml += `
+              <tr>
+                <td>${venue.id}</td>
+                <td>${venue.name}</td>
+                <td>${venue.streetAddress}</td>
+              </tr>
+            `;
+          });
+
+          tableHtml += '</tbody></table>';
+          document.getElementById('venues-table').innerHTML = tableHtml;
+        })
+        .catch(error => console.error('Error fetching venues:', error));
+    }
+  </script>
+
+</body>
+</html>
